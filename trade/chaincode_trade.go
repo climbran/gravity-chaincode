@@ -54,14 +54,29 @@ func (t *TradeChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *TradeChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "submit" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		return t.submit(stub, args[0], args[1], args[2])
 	} else if function == "confirm" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		return t.confirm(stub, args[0], args[1], args[2])
 	} else if function == "finish" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		return t.finish(stub, args[0], args[1], args[2])
 	} else if function == "getTradeByConstumer" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.getTradeByConstumer(stub, args[0])
 	} else if function == "getTradeByBusiness" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.getTradeByBusiness(stub, args[0])
 	}
 	return shim.Error("function error")

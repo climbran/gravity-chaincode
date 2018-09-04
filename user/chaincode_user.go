@@ -23,8 +23,14 @@ func (t *UserChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *UserChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "get" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.get(stub, args[0])
 	} else if function == "set" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		return t.set(stub, args[0], args[1], args[2])
 	}
 	return shim.Success([]byte("error fuction"))
@@ -36,7 +42,7 @@ func (t *UserChaincode) set(stub shim.ChaincodeStubInterface, pubKey string, use
 		return shim.Error("签名验证失败")
 	}
 
-	checkResponse := stub.InvokeChaincode("check_user", [][]byte{[]byte("check"), []byte(user_str)}, "")
+	checkResponse := stub.InvokeChaincode("check_user_gr", [][]byte{[]byte("check"), []byte(user_str)}, "")
 	//用户信息校验
 	if checkResponse.GetStatus() != shim.OK {
 		return checkResponse

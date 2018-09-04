@@ -22,8 +22,14 @@ func (t *MatchingChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response
 	if function == "matchingList" {
 		return t.matchingList(stub)
 	} else if function == "getAddr" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.getAddr(stub, args[0])
 	} else if function == "signup" {
+		if len(args) != 2 {
+			return shim.Error("Incorrect num of args, excepting 2")
+		}
 		return t.signup(stub, args[0], args[1])
 	}
 	return shim.Success([]byte("error fuction"))

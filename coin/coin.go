@@ -24,23 +24,37 @@ func (t *CoinChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *CoinChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "issue" {
+		if len(args) != 2 {
+			return shim.Error("Incorrect num of args, excepting 2")
+		}
 		amount, err := strconv.Atoi(string(args[1]))
 		if err != nil {
 			return shim.Error("参数转换为int类型异常")
 		}
 		return t.issue(stub, args[0], amount)
 	} else if function == "freeze" {
+		if len(args) != 2 {
+			return shim.Error("Incorrect num of args, excepting 2")
+		}
 		amount, err := strconv.Atoi(string(args[1]))
 		if err != nil {
 			return shim.Error("参数转换为int类型异常")
 		}
 		return t.freeze(stub, args[0], amount)
 	} else if function == "confirm" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		amount, err := strconv.Atoi(string(args[2]))
 		if err != nil {
 			return shim.Error("参数转换为int类型异常")
 		}
 		return t.confirm(stub, args[0], args[1], amount)
+	} else if function == "get" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
+		return t.get(stub, args[0])
 	}
 	return shim.Error("function error")
 }
@@ -52,6 +66,15 @@ func (t *CoinChaincode) issue(stub shim.ChaincodeStubInterface, pubKey string, a
 		return shim.Error("issue coin fail")
 	}
 	return shim.Success([]byte("ok"))
+}
+
+func (t *CoinChaincode) get(stub shim.ChaincodeStubInterface, pubKey string) pb.Response {
+	b, err := stub.GetState(pubKey + SUFFIX_COIN)
+
+	if err != nil {
+		return shim.Error("get coin fail")
+	}
+	return shim.Success(b)
 }
 
 func (t *CoinChaincode) freeze(stub shim.ChaincodeStubInterface, pubKey string, amount int) pb.Response {

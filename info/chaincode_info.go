@@ -33,12 +33,24 @@ func (t *InfoChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *InfoChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "get" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.get(stub, args[0])
 	} else if function == "set" {
+		if len(args) != 3 {
+			return shim.Error("Incorrect num of args, excepting 3")
+		}
 		return t.set(stub, args[0], args[1], args[2])
 	} else if function == "getByOwner" {
+		if len(args) != 1 {
+			return shim.Error("Incorrect num of args, excepting 1")
+		}
 		return t.getByOwner(stub, args[0])
 	} else if function == "matching" {
+		if len(args) != 4 {
+			return shim.Error("Incorrect num of args, excepting 4")
+		}
 		t.matching(stub, args[0], args[1], args[2], args[3])
 	}
 	return shim.Success([]byte("error fuction"))
