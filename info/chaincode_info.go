@@ -51,9 +51,9 @@ func (t *InfoChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		if len(args) != 4 {
 			return shim.Error("Incorrect num of args, excepting 4")
 		}
-		t.matching(stub, args[0], args[1], args[2], args[3])
+		return t.matching(stub, args[0], args[1], args[2], args[3])
 	}
-	return shim.Success([]byte("error fuction"))
+	return shim.Error("error fuction")
 }
 
 func (t *InfoChaincode) set(stub shim.ChaincodeStubInterface, pubKey string, info_str string, sign string) pb.Response {

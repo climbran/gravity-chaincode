@@ -11,7 +11,7 @@ const SUFFIX_COIN = "_coin"
 const SUFFIX_FREEZE = "_coin_freeze"
 
 //test case
-//{"Args":["mc","{\"kkkk\":{\"PublishTime\":\"2018-08-27T12:31:47Z\",\"City\":\"Shanghai\",\"Price\":100},\"nnnnn\":{\"PublishTime\":\"2019-06-27T12:31:47Z\",\"City\":\"Beijing\",\"Price\":300}}","Beijing","50","300"]}
+//peer chaincode query -C mychannel -n coin -c '{"Args":["get","Yanweiqing"]}'
 
 type CoinChaincode struct {
 }
@@ -93,10 +93,21 @@ func (t *CoinChaincode) freeze(stub shim.ChaincodeStubInterface, pubKey string, 
 		return shim.Error("balance not enough")
 	}
 	fz, err := stub.GetState(pubKey + SUFFIX_FREEZE)
-	freeze, err := strconv.Atoi(string(fz))
 	if err != nil {
-		return shim.Error("issue coin fail")
+		error_str := fmt.Sprintf("get data error: %s\n", err)
+		fmt.Println(error_str)
+		return shim.Error(error_str)
 	}
+	freeze := 0
+	if len(fz) > 0 {
+		freeze, err = strconv.Atoi(string(fz))
+		if err != nil {
+			error_str := fmt.Sprintf("string to int error: %s\n, %s", err, fz)
+			fmt.Println(error_str)
+			return shim.Error(error_str)
+		}
+	}
+
 	//计算冻结后余额
 	newBalance := balance - amount
 	newFreeze := freeze + amount
