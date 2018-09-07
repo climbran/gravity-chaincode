@@ -174,7 +174,7 @@ func (t *TradeChaincode) finish(stub shim.ChaincodeStubInterface, pubKey, tradeI
 	if err != nil {
 		return shim.Error("json error")
 	}
-	if trade.State != STATE_SUBMIT {
+	if trade.State != STATE_CONFIRM {
 		return shim.Error("state not submit")
 	}
 	coinRs := stub.InvokeChaincode("coin", [][]byte{[]byte("confirm"), []byte(trade.Constumer), []byte(trade.Business), []byte(strconv.Itoa(trade.Price))}, "")

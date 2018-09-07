@@ -75,20 +75,26 @@ func (t *D1_MatchingChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 
 func (t *D1_MatchingChaincode) matching(stub shim.ChaincodeStubInterface, infos_str, city string, price_lower, price_upper int) pb.Response {
 	var infos Infos
-	var info_map = make(map[string]Info)
+
+	var info_map = make(map[string]string)
 
 	err := json.Unmarshal([]byte(infos_str), &info_map)
 	if err != nil {
-		error_str := fmt.Sprintf("string to json error: %s", err)
+		error_str := fmt.Sprintf("string to map  error: %s===%s", err, infos_str)
 		fmt.Println(error_str)
 		return shim.Error(error_str)
 	}
 
 	for k, v := range info_map {
-
-		if strings.EqualFold(v.City, city) && v.Price >= price_lower && v.Price <= price_upper {
-			v.ID = k
-			infos = append(infos, v)
+		info, err := jsonToInfo(v)
+		if err != nil {
+			error_str := fmt.Sprintf("string to json error: %s===%s", err, infos_str)
+			fmt.Println(error_str)
+			return shim.Error(error_str)
+		}
+		if strings.EqualFold(info.City, city) && info.Price >= price_lower && info.Price <= price_upper {
+			info.ID = k
+			infos = append(infos, info)
 		}
 	}
 	sort.Sort(infos)
@@ -104,6 +110,15 @@ func (t *D1_MatchingChaincode) matching(stub shim.ChaincodeStubInterface, infos_
 		return shim.Error(error_str)
 	}
 	return shim.Success(result_str)
+}
+
+func jsonToInfo(str string) (Info, error) {
+	var i Info
+	err := json.Unmarshal([]byte(str), &i)
+	if err == nil {
+		return i, nil
+	}
+	return i, err
 }
 
 func main() {

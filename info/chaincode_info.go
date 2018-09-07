@@ -53,7 +53,8 @@ func (t *InfoChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		}
 		return t.matching(stub, args[0], args[1], args[2], args[3])
 	}
-	return shim.Error("error fuction")
+	error_str := fmt.Sprintf("function error: %s\n", function)
+	return shim.Error(error_str)
 }
 
 func (t *InfoChaincode) set(stub shim.ChaincodeStubInterface, pubKey string, info_str string, sign string) pb.Response {
